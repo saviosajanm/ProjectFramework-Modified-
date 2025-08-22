@@ -143,6 +143,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Admin\DeviceDetails.aspx" />
     <Content Include="Admin\EmailSettings.aspx" />
     <Content Include="App_Data\PFDatabase.mdb" />
     <Content Include="Page\About.aspx" />
@@ -214,6 +215,13 @@
     <Compile Include="Admin\AdminSettings.aspx.designer.cs">
       <DependentUpon>AdminSettings.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Admin\DeviceDetails.aspx.cs">
+      <DependentUpon>DeviceDetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\DeviceDetails.aspx.designer.cs">
+      <DependentUpon>DeviceDetails.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Admin\EmailSettings.aspx.cs">
       <DependentUpon>EmailSettings.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -222,6 +230,7 @@
       <DependentUpon>EmailSettings.aspx</DependentUpon>
     </Compile>
     <Compile Include="API\AuthController.cs" />
+    <Compile Include="API\DeviceDetailsController.cs" />
     <Compile Include="API\EmailSettingsController.cs" />
     <Compile Include="API\SettingsController.cs" />
     <Compile Include="API\TokenCheckController.cs" />
@@ -230,9 +239,11 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="BLL\BLLBase.cs" />
+    <Compile Include="BLL\DeviceDetailsBLL.cs" />
     <Compile Include="BLL\EmailSettingsBLL.cs" />
     <Compile Include="BLL\SettingsBLL.cs" />
     <Compile Include="BLL\UserBLL.cs" />
+    <Compile Include="Models\DeviceDetails.cs" />
     <Compile Include="Models\EmailSettings.cs" />
     <Compile Include="Page\About.aspx.cs">
       <DependentUpon>About.aspx</DependentUpon>

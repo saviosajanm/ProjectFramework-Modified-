@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewcontents="clr-namespace:ProjectFrameworkMob.ViewContents"
+             x:Class="ProjectFrameworkMob.Views.DeviceDetailsPage"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content>
+        <StackLayout>
+            <viewcontents:MainHeaderControl x:Name="HeaderControl" IsVisible="true"></viewcontents:MainHeaderControl>
+            <Frame CornerRadius="10" HasShadow="True" VerticalOptions="StartAndExpand" Margin="10">
+                <StackLayout Spacing="10">
+                    <Label Text="Device Details" FontSize="30" FontAttributes="Bold" FontFamily="Roboto" />
+
+                    <Label x:Name="LabelProcessorCount" />
+                    <Label x:Name="LabelTotalMemory" />
+                    <Label x:Name="LabelMemoryLeft" />
+                    <Label x:Name="LabelTotalSpace" />
+                    <Label x:Name="LabelSpaceLeft" />
+
+                    <Button Text="Send System Details" Clicked="SendDetails_Clicked" BackgroundColor="DodgerBlue" TextColor="White" />
+                    <Label x:Name="lblStatus" TextColor="Brown" FontSize="Medium" HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

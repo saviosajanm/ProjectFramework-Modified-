@@ -99,5 +99,10 @@ namespace ProjectFrameworkMob.Views
         {
             await Navigation.PushAsync(new EmailSettingsPage());
         }
+
+        private async void SystemDetails_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new DeviceDetailsPage());
+        }
     }
 }

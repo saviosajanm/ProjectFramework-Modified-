@@ -23,6 +23,7 @@ namespace ProjectFrameworkWeb
                 {
                     IDAdminSettings.Visible = true;
                     IDEmailSettings.Visible = true;
+                    IDDeviceDetails.Visible = true;
                 }
                 else
                 {
@@ -35,6 +36,7 @@ namespace ProjectFrameworkWeb
                 SetLoginText("Login");
                 IDAdminSettings.Visible = false;
                 IDEmailSettings.Visible = false;
+                IDDeviceDetails.Visible = false;
             }
         }
 

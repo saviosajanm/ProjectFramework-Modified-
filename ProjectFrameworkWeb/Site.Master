@@ -51,16 +51,34 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-    <li><a runat="server" href="~/">Home</a></li>
-    <li><a runat="server" href="~/Page/About">About</a></li>
-    <li><a runat="server" href="~/Page/Contact">Contact</a></li>
-    <li id="Li1" runat="server"><a runat="server" href="~/Admin/AdminSettings"><asp:Label ID="Label1" runat="server" Text="Settings"></asp:Label></a></li>
-    <li id="IDEmailSettings" runat="server" visible="false"><a runat="server" href="~/Admin/EmailSettings">E-Mail Settings</a></li>
-</ul>
-<ul class="nav navbar-nav navbar-right">
-                        <li runat="server" id="IDAdminSettings" visible="false" ><a href="/Admin/AdminSettings"> <span class="glyphicon glyphicon-cog"></span> <asp:Label ID="LabelSettings" runat="server" Text="Settings "></asp:Label> </a></li>
-                        <li><a runat="server" href="~/Login"> <span class="glyphicon glyphicon-user"></span> <asp:Label ID="LabelLogin" runat="server" Text=" Login"></asp:Label> </a></li>
-                        </ul>
+                        <li><a runat="server" href="~/">Home</a></li>
+                        <li><a runat="server" href="~/Page/About">About</a></li>
+                        <li><a runat="server" href="~/Page/Contact">Contact</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li id="IDEmailSettings" runat="server" visible="false">
+                            <a runat="server" href="~/Admin/EmailSettings">
+                                <span class="glyphicon glyphicon-envelope"></span> E-Mail Settings
+                            </a>
+                        </li>
+                        <li id="IDDeviceDetails" runat="server" visible="false">
+                            <a runat="server" href="~/Admin/DeviceDetails">
+                                <span class="glyphicon glyphicon-phone"></span> Device Details
+                            </a>
+                        </li>
+                        <li runat="server" id="IDAdminSettings" visible="false">
+                            <a href="/Admin/AdminSettings"> 
+                                <span class="glyphicon glyphicon-cog"></span> 
+                                <asp:Label ID="LabelSettings" runat="server" Text="Settings "></asp:Label> 
+                            </a>
+                        </li>
+                        <li>
+                            <a runat="server" href="~/Login"> 
+                                <span class="glyphicon glyphicon-user"></span> 
+                                <asp:Label ID="LabelLogin" runat="server" Text=" Login"></asp:Label> 
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
