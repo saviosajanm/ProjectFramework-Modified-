@@ -101,6 +101,7 @@
                     </Frame>
                     <Button BackgroundColor="Green" Text="Get Settings" VerticalOptions="EndAndExpand" CornerRadius="5" Margin="0,15,0,0" Clicked="GetSettings_Clicked"></Button>
                     <Button BackgroundColor="CornflowerBlue" Text="Update Settings" VerticalOptions="EndAndExpand" CornerRadius="5" Margin="0,15,0,0" Clicked="UpdateSettings_Clicked"></Button>
+                    <Button BackgroundColor="Orange" Text="E-Mail Settings" VerticalOptions="EndAndExpand" CornerRadius="5" Margin="0,15,0,0" Clicked="EmailSettings_Clicked"></Button>
                     <Label Text="Status" TextColor="Brown" FontSize="Medium" x:Name="lblStatus" HorizontalOptions="Center"></Label>
                 </StackLayout>
             </Frame >

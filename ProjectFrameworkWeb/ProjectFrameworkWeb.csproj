@@ -143,6 +143,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Admin\EmailSettings.aspx" />
     <Content Include="App_Data\PFDatabase.mdb" />
     <Content Include="Page\About.aspx" />
     <Content Include="Admin\AdminSettings.aspx" />
@@ -213,7 +214,15 @@
     <Compile Include="Admin\AdminSettings.aspx.designer.cs">
       <DependentUpon>AdminSettings.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Admin\EmailSettings.aspx.cs">
+      <DependentUpon>EmailSettings.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\EmailSettings.aspx.designer.cs">
+      <DependentUpon>EmailSettings.aspx</DependentUpon>
+    </Compile>
     <Compile Include="API\AuthController.cs" />
+    <Compile Include="API\EmailSettingsController.cs" />
     <Compile Include="API\SettingsController.cs" />
     <Compile Include="API\TokenCheckController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -221,8 +230,10 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="BLL\BLLBase.cs" />
+    <Compile Include="BLL\EmailSettingsBLL.cs" />
     <Compile Include="BLL\SettingsBLL.cs" />
     <Compile Include="BLL\UserBLL.cs" />
+    <Compile Include="Models\EmailSettings.cs" />
     <Compile Include="Page\About.aspx.cs">
       <DependentUpon>About.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -284,7 +295,6 @@
     <Folder Include="Admin\UserControl\" />
     <Folder Include="Controllers\" />
     <Folder Include="Images\" />
-    <Folder Include="Models\" />
     <Folder Include="Page\UserControl\" />
     <Folder Include="UserData\" />
   </ItemGroup>

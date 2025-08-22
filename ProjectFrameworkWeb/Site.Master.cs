@@ -12,27 +12,29 @@ namespace ProjectFrameworkWeb
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if(!IsPostBack)
+            if (!IsPostBack)
             {
                 LoadPageSettings();
             }
-            if(Session["UserID"]!=null && !string.IsNullOrEmpty(Session["UserID"].ToString()))
+            if (Session["UserID"] != null && !string.IsNullOrEmpty(Session["UserID"].ToString()))
             {
                 SetLoginText("Logout");
-                if(Session["Role"].ToString()== UserRole.Admin.ToString())
+                if (Session["Role"].ToString() == UserRole.Admin.ToString())
                 {
                     IDAdminSettings.Visible = true;
+                    IDEmailSettings.Visible = true;
                 }
                 else
                 {
                     //Show other settings based on your Business Role
                 }
-                
+
             }
             else
             {
                 SetLoginText("Login");
                 IDAdminSettings.Visible = false;
+                IDEmailSettings.Visible = false;
             }
         }
 

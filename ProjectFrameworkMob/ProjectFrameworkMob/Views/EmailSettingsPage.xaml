@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewcontents="clr-namespace:ProjectFrameworkMob.ViewContents"
+             x:Class="ProjectFrameworkMob.Views.EmailSettingsPage"
+             NavigationPage.HasNavigationBar="False">
+    <ContentPage.Content>
+        <StackLayout>
+            <viewcontents:MainHeaderControl x:Name="HeaderControl" IsVisible="true"></viewcontents:MainHeaderControl>
+            <Frame CornerRadius="10" HasShadow="True" VerticalOptions="StartAndExpand">
+                <StackLayout>
+                    <Label Text="E-Mail Settings" FontSize="30" FontAttributes="Bold" FontFamily="Roboto" />
+
+                    <Entry x:Name="EntrySmtpServer" Placeholder="SMTP Server" />
+                    <Entry x:Name="EntrySmtpPort" Placeholder="SMTP Port" Keyboard="Numeric" />
+                    <Entry x:Name="EntryEmail" Placeholder="E-Mail Address" Keyboard="Email" />
+                    <Entry x:Name="EntryPassword" Placeholder="Password" IsPassword="True" />
+
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Enable SSL" VerticalOptions="Center"/>
+                        <Switch x:Name="SwitchEnableSSL" />
+                    </StackLayout>
+
+                    <Button Text="Get E-Mail Settings" Clicked="GetEmailSettings_Clicked" BackgroundColor="Green" />
+                    <Button Text="Update E-Mail Settings" Clicked="UpdateEmailSettings_Clicked" BackgroundColor="CornflowerBlue"/>
+                    <Label x:Name="lblStatus" TextColor="Brown" FontSize="Medium" HorizontalOptions="Center" />
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

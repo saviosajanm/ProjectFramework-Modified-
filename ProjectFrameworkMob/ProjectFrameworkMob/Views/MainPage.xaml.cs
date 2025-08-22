@@ -94,5 +94,10 @@ namespace ProjectFrameworkMob.Views
             ((App)(App.Current)).RelaunchLoginForm();
 
         }
+
+        private async void EmailSettings_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new EmailSettingsPage());
+        }
     }
 }

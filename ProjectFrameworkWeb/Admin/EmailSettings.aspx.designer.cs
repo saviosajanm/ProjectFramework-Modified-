@@ -7,101 +7,74 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ProjectFrameworkWeb
+namespace ProjectFrameworkWeb.Admin
 {
 
 
-    public partial class SiteMaster
+    public partial class EmailSettings
     {
 
         /// <summary>
-        /// LabelApplicationName control.
+        /// TextBoxSmtpServer control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LabelApplicationName;
+        protected global::System.Web.UI.WebControls.TextBox TextBoxSmtpServer;
 
         /// <summary>
-        /// Li1 control.
+        /// TextBoxSmtpPort control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl Li1;
+        protected global::System.Web.UI.WebControls.TextBox TextBoxSmtpPort;
 
         /// <summary>
-        /// Label1 control.
+        /// TextBoxEmail control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
+        protected global::System.Web.UI.WebControls.TextBox TextBoxEmail;
 
         /// <summary>
-        /// IDEmailSettings control.
+        /// TextBoxPassword control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl IDEmailSettings;
+        protected global::System.Web.UI.WebControls.TextBox TextBoxPassword;
 
         /// <summary>
-        /// IDAdminSettings control.
+        /// CheckEnableSSL control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl IDAdminSettings;
+        protected global::System.Web.UI.WebControls.CheckBox CheckEnableSSL;
 
         /// <summary>
-        /// LabelSettings control.
+        /// ButtonUpdate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LabelSettings;
+        protected global::System.Web.UI.WebControls.Button ButtonUpdate;
 
         /// <summary>
-        /// LabelLogin control.
+        /// LabelStatus control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LabelLogin;
-
-        /// <summary>
-        /// MainContent control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
-
-        /// <summary>
-        /// HyperLinkCompany control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLinkCompany;
-
-        /// <summary>
-        /// LabelProjectName control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LabelProjectName;
+        protected global::System.Web.UI.WebControls.Label LabelStatus;
     }
 }

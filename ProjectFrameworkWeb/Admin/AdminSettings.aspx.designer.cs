@@ -51,6 +51,51 @@ namespace ProjectFrameworkWeb.AdminPages
         protected global::System.Web.UI.WebControls.CheckBox CheckEnableAPIAuth;
 
         /// <summary>
+        /// TextBoxSMTPServer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TextBoxSMTPServer;
+
+        /// <summary>
+        /// TextBoxSMTPPort control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TextBoxSMTPPort;
+
+        /// <summary>
+        /// TextBoxSMTPUsername control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TextBoxSMTPUsername;
+
+        /// <summary>
+        /// TextBoxSMTPPassword control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TextBoxSMTPPassword;
+
+        /// <summary>
+        /// TextBoxFromEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TextBoxFromEmail;
+
+        /// <summary>
         /// ButtonUpdate control.
         /// </summary>
         /// <remarks>
