@@ -6,7 +6,7 @@ using System;
 namespace ProjectFramework.Web.API
 {
     [Route("api/EmailSettings")]
-    public class EmailSettingsController : ControllerBase
+    public class EmailSettingsController : ApiBaseController
     {
         private EmailSettingsBLL _emailSettingsBLL = new EmailSettingsBLL();
 

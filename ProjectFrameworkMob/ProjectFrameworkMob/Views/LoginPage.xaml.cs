@@ -27,8 +27,8 @@ namespace ProjectFrameworkMob.Views
                     App.SettingsManagerObj.EMail = lblUsername.Text;
                     App.SettingsManagerObj.SaveSettings();
                     App.ApiServiceObj.SetUserCredentials(Info.UserID, lblUsername.Text, Info.AuthenticationToken);
-                    lblStatus.Text = "Login Success..";
-                    await Task.Delay(500);
+                    lblStatus.Text = "Login Success. Fetching settings...";
+                    await ((App)Application.Current).FetchAndApplySettings();
 
                     ((App)(App.Current)).RelaunchMasterForm();
                 }

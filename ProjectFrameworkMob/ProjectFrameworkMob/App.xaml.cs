@@ -3,6 +3,7 @@ using ProjectFrameworkMob.Services;
 using ProjectFrameworkMob.Utils;
 using ProjectFrameworkMob.Views;
 using System;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -123,21 +124,48 @@ namespace ProjectFrameworkMob
             }
         }
 
-        private void LaunchForms()
+        private async void LaunchForms()
         {
-            MainPageObj = new MainPage();
             if (string.IsNullOrEmpty(App.SettingsManagerObj.AuthenticationToken))
             {
                 MainPage = new NavigationPage(new LoginPage());
             }
             else
             {
+                // Fetch latest settings before loading the main page.
+                await FetchAndApplySettings();
+                MainPageObj = new MainPage();
                 MainPage = new NavigationPage(MainPageObj);
+            }
+        }
+
+        public async Task FetchAndApplySettings()
+        {
+            try
+            {
+                // Only fetch if we have a token
+                if (!string.IsNullOrEmpty(SettingsManagerObj.AuthenticationToken))
+                {
+                    AppSettings serverSettings = await ApiServiceObj.GetSettingsInfo();
+                    if (serverSettings != null && !string.IsNullOrEmpty(serverSettings.AppName))
+                    {
+                        SettingsManagerObj.Settings.AppName = serverSettings.AppName;
+                        SettingsManagerObj.Settings.MainHeading = serverSettings.MainHeading;
+                        SettingsManagerObj.Settings.MainDesc = serverSettings.MainDesc;
+                        SettingsManagerObj.SaveSettings();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Silently fail if API is not available; the app will use cached settings.
             }
         }
 
         public void RelaunchMasterForm()
         {
+            // Re-create MainPageObj to ensure it picks up the latest settings.
+            MainPageObj = new MainPage();
             MainPage = new NavigationPage(MainPageObj);
         }
 

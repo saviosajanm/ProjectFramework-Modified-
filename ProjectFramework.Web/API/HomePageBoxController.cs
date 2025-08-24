@@ -8,7 +8,7 @@ namespace ProjectFramework.Web.API
 {
     [Route("api/HomePageBox")]
     [ApiController]
-    public class HomePageBoxController : ControllerBase
+    public class HomePageBoxController : ApiBaseController
     {
         private readonly HomePageBoxBLL _homePageBoxBLL = new HomePageBoxBLL();
 

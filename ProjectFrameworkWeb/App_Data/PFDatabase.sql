@@ -25,8 +25,8 @@ INSERT INTO `settings_tb` (`ID`, `SettingsKey`, `SettingsValue`, `Reserved1`) VA
 INSERT INTO `settings_tb` (`ID`, `SettingsKey`, `SettingsValue`, `Reserved1`) VALUES (4, 'EnableMobAuth', 'False', NULL);
 INSERT INTO `settings_tb` (`ID`, `SettingsKey`, `SettingsValue`, `Reserved1`) VALUES (5, 'SMTPServer', 'smtp.example.com', NULL);
 INSERT INTO `settings_tb` (`ID`, `SettingsKey`, `SettingsValue`, `Reserved1`) VALUES (6, 'SMTPPort', '587', NULL);
-INSERT INTO `settings_tb` (`ID`, `SettingsKey`, `SettingsValue`, `Reserved1`) VALUES (7, 'SMTPUsername', 'user@example.com', NULL);
-INSERT INTO `settings_tb` (`ID`, `SettingsKey`, `SettingsValue`, `Reserved1`) VALUES (8, 'SMTPPassword', 'password', NULL);
+INSERT INTO `settings_tb` (`ID`, `SettingsKey`, `SettingsValue`, `Reserved1`) VALUES (7, 'EMail', 'user@example.com', NULL);
+INSERT INTO `settings_tb` (`ID`, `SettingsKey`, `SettingsValue`, `Reserved1`) VALUES (8, 'EmailPassword', 'password', NULL);
 INSERT INTO `settings_tb` (`ID`, `SettingsKey`, `SettingsValue`, `Reserved1`) VALUES (9, 'FromEmail', 'sender@example.com', NULL);
 # 9 records
 

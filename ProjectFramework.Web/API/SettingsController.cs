@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace ProjectFramework.Web.API
 {
     [Route("api/Settings")]
-    public class SettingsController : ControllerBase
+    public class SettingsController : ApiBaseController
     {
         private SettingsBLL settingsBll = new SettingsBLL();
 

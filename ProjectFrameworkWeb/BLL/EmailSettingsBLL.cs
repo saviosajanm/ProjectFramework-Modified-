@@ -14,7 +14,7 @@ namespace ProjectFrameworkWeb.BLL
                     SMTPServer = GetValue("SMTPServer"),
                     SMTPPort = Convert.ToInt32(GetValue("SMTPPort")),
                     EMail = GetValue("EMail"),
-                    Password = Decrypt(GetValue("Password")),
+                    Password = Decrypt(GetValue("EmailPassword")),
                     EnableSSL = Convert.ToBoolean(GetValue("EnableSSL"))
                 };
             }
@@ -29,7 +29,7 @@ namespace ProjectFrameworkWeb.BLL
             SetValue("SMTPServer", settings.SMTPServer);
             SetValue("SMTPPort", settings.SMTPPort.ToString());
             SetValue("EMail", settings.EMail);
-            SetValue("Password", Encrypt(settings.Password));
+            SetValue("EmailPassword", Encrypt(settings.Password ?? string.Empty));
             SetValue("EnableSSL", settings.EnableSSL.ToString());
         }
     }
