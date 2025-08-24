@@ -1,48 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using ProjectFramework.Web.BLL;
 using ProjectFrameworkCommonLib;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System;
 
 namespace ProjectFramework.Web.API
 {
-    [Route("api/auth")]
+    [Route("api/Auth")]
+    [ApiController]
     public class AuthController : ControllerBase
     {
-        // GET: api/<controller>
-        [Route("ValidateUser")]
-        [HttpGet]
-        public ActionResult ValidateUser(string UserID, string Password)
+        private readonly UserBLL _userBll = new UserBLL();
+
+        [HttpGet("ValidateUser")]
+        public ActionResult ValidateUser([FromQuery] string UserID, [FromQuery] string Password)
         {
             try
             {
-                AuthInfo Info = new AuthInfo();
-                if (UserID=="admin" && Password=="admin")
+                if (string.IsNullOrEmpty(UserID) || string.IsNullOrEmpty(Password))
                 {
-                    
-                    Info.UserID = 1;
-                    Info.AuthenticationToken = "1234567";
-                    return Ok(Info);
+                    return BadRequest("UserID and Password cannot be empty.");
+                }
 
+                AuthInfo info = _userBll.GetUserInfo(UserID, Password);
+
+                if (info.UserID > 0)
+                {
+                    return Ok(info);
                 }
                 else
                 {
-                    Info.UserID = -1;
-                    Info.AuthenticationToken = "User Not Found";
-                    return NotFound(Info);
+                    // Return 401 Unauthorized for a failed login attempt.
+                    return Unauthorized(info.AuthenticationToken);
                 }
-                
-                
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-
-                return NotFound(Ex.Message);
+                // Return 500 Internal Server Error for any unexpected exceptions.
+                return StatusCode(500, "An internal server error occurred: " + ex.Message);
             }
         }
-
     }
 }

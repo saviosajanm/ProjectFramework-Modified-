@@ -13,6 +13,15 @@ namespace ProjectFrameworkMob.Services
         private string m_CustomerEmail;//useremail in mobile
         private string m_AuthenticationToken;
 
+        public AppCommunicationClient(HttpClientHandler handler) : base(handler)
+        {
+        }
+
+        // MODIFIED: Add a parameterless constructor for the production path
+        public AppCommunicationClient() : base()
+        {
+            BaseAddress = new Uri(App.AzureBackendUrl);
+        }
         public void SetUserCredentials(int CustomerID, string CustomerEmail, string AuthenticationToken)
         {
             m_CustomerID = CustomerID;
@@ -21,7 +30,7 @@ namespace ProjectFrameworkMob.Services
         }
         public new Task<HttpResponseMessage> GetAsync(string requestUri)
         {
-            if(!string.IsNullOrEmpty(m_AuthenticationToken))
+            if (!string.IsNullOrEmpty(m_AuthenticationToken))
             {
                 DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", m_AuthenticationToken);
             }

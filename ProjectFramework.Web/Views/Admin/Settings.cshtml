@@ -1,36 +1,40 @@
 ﻿@model AdminViewModel
 @{
-    ViewData["Title"] = "Settings";
+    ViewData["Title"] = "Settings Page";
 }
-
+<h2>@ViewData["Title"].</h2>
 <div class="panel panel-primary">
     <div class="panel-heading"><h4>Configure Site Settings</h4></div>
     <div class="panel-body">
-        <form method="post" enctype="multipart/form-data" asp-controller="Admin" asp-action="Settings">
-            <div class="container">
-
-                <div class="form-group">
-                    <label for="txtAppName">Application Name:</label><br />
-                    <input type="text" id="txtAppName" class="form-control" value="@Model.AppName" name="AppName" />
-
-                </div>
-                <div class="form-group">
-                    <label for="txMainHeading">Main Heading:</label><br />
-                    <input type="text" id="txMainHeading" class="form-control" value="@Model.MainHeading" name="MainHeading"/>
-                </div>
-                <div class="form-group">
-                    <label for="txMainDesc">Main Description:</label><br />
-                    <textarea id="txMainDesc" class="form-control" name="MainDesc">@Model.MainDesc</textarea>
-                </div>
-                <div class="form-group">
-                    <input type="checkbox" asp-for="IsChecked" id="txEnableMobAuth" name="EnableMobAuth" />
-                    <label for="txEnableMobAuth">Enable Authentication Check for Mobile API Calls</label>
-
-                </div>
-                <input type="submit" value="Update" class="btn btn-primary" /><br /><br />
-                <label> @Model.StatusString </label>
+        <form asp-action="Settings" method="post">
+            <div class="form-group">
+                <label asp-for="AppName">Application Name</label>
+                <input asp-for="AppName" class="form-control" style="min-width: 100%;" />
             </div>
+            <div class="form-group">
+                <label asp-for="MainHeading">Main Heading</label>
+                <input asp-for="MainHeading" class="form-control" style="min-width: 100%;" />
+            </div>
+            <div class="form-group">
+                <label asp-for="MainDesc">Main Description</label>
+                <textarea asp-for="MainDesc" class="form-control" style="min-width: 100%;"></textarea>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="IsChecked" /> Enable Authentication Check for Mobile API Calls
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.StatusString))
+            {
+                <div class="form-group">
+                    <div class="text-danger font-weight-bold">@Model.StatusString</div>
+                </div>
+            }
         </form>
     </div>
-    </div>
-
+</div>

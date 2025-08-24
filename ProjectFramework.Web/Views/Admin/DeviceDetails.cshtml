@@ -1,0 +1,19 @@
+﻿@model DeviceDetails
+@{
+    ViewData["Title"] = "Mobile Device Details";
+}
+
+<h2>@ViewData["Title"].</h2>
+<p>The following details were last sent from the mobile application.</p>
+<div class="panel panel-info">
+    <div class="panel-heading"><h4>Received Device Information</h4></div>
+    <div class="panel-body">
+        <ul class="list-group">
+            <li class="list-group-item"><strong>Processor Count:</strong> @Model.ProcessorCount</li>
+            <li class="list-group-item"><strong>Total Memory:</strong> @Model.TotalMemory</li>
+            <li class="list-group-item"><strong>Memory Left:</strong> @Model.MemoryLeft</li>
+            <li class="list-group-item"><strong>Total Space:</strong> @Model.TotalSpace</li>
+            <li class="list-group-item"><strong>Space Left:</strong> @Model.SpaceLeft</li>
+        </ul>
+    </div>
+</div>

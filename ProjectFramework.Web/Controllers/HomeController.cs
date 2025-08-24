@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,40 +8,42 @@ using ProjectFrameworkCommonLib;
 
 namespace ProjectFramework.Web.Controllers
 {
-    public class HomeController : AppControllerBase
+    public class HomeController : AppControllerBase // Make sure it inherits from AppControllerBase
     {
-        public HomeViewModel  HomeSettings = new HomeViewModel();
-        public LoginViewModel LoginData = new LoginViewModel();
         private readonly ILogger<HomeController> _logger;
+        private readonly UserBLL _userBll = new UserBLL();
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            
         }
 
-        private void SetAdminFlag()
+        private void SetViewBagData()
         {
-            string strUserID = HttpContext.Session.GetString("UserID");
-            if (string.IsNullOrEmpty(strUserID))
-            {
-                HomeSettings.IsAdmin = false;
-            }
-            else
-            {
-                HomeSettings.IsAdmin = true;
-            }
+            var settings = new SettingsBLL();
+            ViewBag.AppName = settings.GetValue("AppName");
+            var strUserID = HttpContext.Session.GetString("UserID");
+            var role = HttpContext.Session.GetString("Role");
+            ViewBag.IsAdmin = !string.IsNullOrEmpty(strUserID) && role == "Admin";
         }
+
         public IActionResult Index()
         {
-            SetAdminFlag();
-            return View(HomeSettings);
+            SetViewBagData();
+            var model = new HomeViewModel(); // This will load MainHeading and MainDesc
+            return View(model);
         }
 
         public IActionResult About()
         {
-            SetAdminFlag();
-            return View(HomeSettings);
+            SetViewBagData();
+            return View(new ViewModelBase()); // Pass base model for layout properties
+        }
+
+        public IActionResult Contact()
+        {
+            SetViewBagData();
+            return View(new ViewModelBase()); // Pass base model
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -56,35 +54,42 @@ namespace ProjectFramework.Web.Controllers
 
         public IActionResult Login()
         {
-            HttpContext.Session.SetString("UserID", "");
-            HttpContext.Session.SetString("UserName", "");
-            HttpContext.Session.SetString("Role", "");
-            SetAdminFlag();
-            return View(LoginData);
+            HttpContext.Session.Clear();
+            SetViewBagData();
+            var model = new LoginViewModel();
+            return View(model);
         }
 
         [HttpPost]
-        public IActionResult Login(string UserName, string Password)
+        public IActionResult Login(LoginViewModel model)
         {
-            AuthInfo Info = LoginData.UserBLLObj.GetUserInfo(UserName, Password);
-
-            if (Info.UserID>0)
+            SetViewBagData();
+            if (!ModelState.IsValid)
             {
-                UserRole Role = LoginData.UserBLLObj.GetUserRole(Info.UserID);
-                HttpContext.Session.SetString("UserID", Info.UserID.ToString());
-                HttpContext.Session.SetString("UserName", UserName);
-                HttpContext.Session.SetString("Role", Role.ToString());
-                LoginData.StatusString = "Login Success";
-                //Redirect to settings View
-                return RedirectToAction("Settings","Admin");
+                return View(model);
+            }
 
+            if (string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.Password))
+            {
+                model.StatusString = "Please Enter Valid User Name | E Mail and Password";
+                return View(model);
+            }
+
+            AuthInfo info = _userBll.GetUserInfo(model.UserName, model.Password);
+
+            if (info.UserID > 0)
+            {
+                UserRole role = _userBll.GetUserRole(info.UserID);
+                HttpContext.Session.SetString("UserID", info.UserID.ToString());
+                HttpContext.Session.SetString("UserName", model.UserName);
+                HttpContext.Session.SetString("Role", role.ToString());
+                return RedirectToAction("Settings", "Admin");
             }
             else
             {
-                LoginData.StatusString = "Login Failed";
-                return View(LoginData);
+                model.StatusString = $"Login Failed: {info.AuthenticationToken}";
+                return View(model);
             }
-            
         }
     }
 }

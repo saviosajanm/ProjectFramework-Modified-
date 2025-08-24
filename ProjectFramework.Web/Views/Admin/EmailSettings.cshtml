@@ -1,0 +1,44 @@
+﻿@model EmailSettings
+@{
+    ViewData["Title"] = "E-Mail Settings";
+}
+<h2>@ViewData["Title"].</h2>
+<div class="panel panel-primary">
+    <div class="panel-heading"><h4>Configure E-Mail Server Settings</h4></div>
+    <div class="panel-body">
+        <form asp-action="EmailSettings" method="post">
+            <div class="form-group">
+                <label asp-for="SMTPServer">SMTP Server</label>
+                <input asp-for="SMTPServer" class="form-control" style="min-width: 100%;" />
+            </div>
+            <div class="form-group">
+                <label asp-for="SMTPPort">SMTP Port</label>
+                <input asp-for="SMTPPort" class="form-control" style="min-width: 100%;" />
+            </div>
+            <div class="form-group">
+                <label asp-for="EMail">E-Mail Address</label>
+                <input asp-for="EMail" class="form-control" style="min-width: 100%;" type="email" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Password">Password</label>
+                <input asp-for="Password" class="form-control" style="min-width: 100%;" type="password" />
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="EnableSSL" /> Enable SSL
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+            @if (ViewBag.StatusMessage != null)
+            {
+                <div class="form-group">
+                    <div class="text-danger font-weight-bold">@ViewBag.StatusMessage</div>
+                </div>
+            }
+        </form>
+    </div>
+</div>

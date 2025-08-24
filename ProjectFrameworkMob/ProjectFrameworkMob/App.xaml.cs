@@ -6,48 +6,102 @@ using System;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static System.Net.WebRequestMethods;
 
 namespace ProjectFrameworkMob
 {
+    // Define an enumeration to represent the different backend types.
+    public enum BackendType
+    {
+        AspNetCore,
+        AspNetWebForms
+    }
+
     public partial class App : Application
     {
+        // *** CONFIGURATION SWITCH ***
+        // Change this value to switch between your web projects.
+        // BackendType.AspNetCore for ProjectFramework.Web (port 51000)
+        // BackendType.AspNetWebForms for ProjectFrameworkWeb (port 52371)
+        public static readonly BackendType CurrentBackend = BackendType.AspNetCore;
+        //public static readonly BackendType CurrentBackend = BackendType.AspNetWebForms;
 
         private const string AppEncryptionKey = "KtsInfotechPalaKeralaIndia";
-        //TODO: Replace with *.azurewebsites.net url after deploying backend to Azure
-        //To debug on Android emulators run the web backend against .NET Core not IIS
-        //If using other emulators besides stock Google images you may need to adjust the IP address
-        public static string LocalDevelepmentURL = "http://192.168.31.178:52371/";
-        public static string TestHostingURL = "http://testaspnet.virtualtutor.co.in/";
-        public static string ProductionURL = "http://testaspnet.virtualtutor.co.in/";
-        public static string AzureTestURL = "http://testaspnet.virtualtutor.co.in/";
-        //Local
-        public static string AzureBackendUrl = DeviceInfo.Platform == DevicePlatform.Android ? LocalDevelepmentURL : LocalDevelepmentURL;
-        //customer
-        // public static string AzureBackendUrl = DeviceInfo.Platform == DevicePlatform.Android ?TestHostingURL : TestHostingURL ;
-        //Dev
-        //public static string AzureBackendUrl = DeviceInfo.Platform == DevicePlatform.Android ? ProductionURL : ProductionURL;
-        // Azure Test
-        //public static string AzureBackendUrl = DeviceInfo.Platform == DevicePlatform.Android ? AzureTestURL : AzureTestURL;
+
+        // Backend URLs are now set dynamically based on the CurrentBackend switch.
+        public static string LocalDevelopmentURL { get; private set; }
+        public static string AzureBackendUrl { get; private set; }
+
+        #region --- Dynamic Page URLs ---
+        // These properties will return the correct full URL for web pages
+        // based on the selected backend, resolving the different routing patterns.
+
+        public static string LoginPageUrl
+        {
+            get
+            {
+                return CurrentBackend == BackendType.AspNetCore
+                    ? AzureBackendUrl + "Home/Login"
+                    : AzureBackendUrl + "Login";
+            }
+        }
+
+        public static string AboutPageUrl
+        {
+            get
+            {
+                return CurrentBackend == BackendType.AspNetCore
+                    ? AzureBackendUrl + "Home/About"
+                    : AzureBackendUrl + "Page/About";
+            }
+        }
+
+        public static string ContactPageUrl
+        {
+            get
+            {
+                return CurrentBackend == BackendType.AspNetCore
+                    ? AzureBackendUrl + "Home/Contact"
+                    : AzureBackendUrl + "Page/Contact";
+            }
+        }
+
+        // Add other page URLs here if they differ between projects.
+        #endregion
 
         public static AppSettingsManager SettingsManagerObj = null;
-
         public static AppApiService ApiServiceObj = null;
-
         public static MainPage MainPageObj { get; set; }
 
         public App()
         {
+            // Set the backend URL based on the configuration switch.
+            switch (CurrentBackend)
+            {
+                case BackendType.AspNetCore:
+                    // URL for ProjectFramework.Web
+                    LocalDevelopmentURL = "http://192.168.31.178:51000";
+                    break;
+                case BackendType.AspNetWebForms:
+                    // URL for ProjectFrameworkWeb
+                    // Note: 10.0.2.2 is the standard IP for the host machine from the Android emulator.
+                    LocalDevelopmentURL = "http://192.168.31.178:52371/";
+                    break;
+            }
+
+            // Set the final backend URL for the application to use.
+            AzureBackendUrl = DeviceInfo.Platform == DevicePlatform.Android ? LocalDevelopmentURL : "http://localhost:51000";
+
+
             try
             {
                 InitializeComponent();
 
-                //Se the Encryption Key AppEncryptionKey . This key value should be same in both Mobile and MobAPI to communicate 
+                // Set the Encryption Key. This key must match the one in your web project.
                 PFCrypt.Key = AppEncryptionKey;
 
-                if (App.SettingsManagerObj == null)
+                if (SettingsManagerObj == null)
                 {
-                    App.SettingsManagerObj = new AppSettingsManager();
+                    SettingsManagerObj = new AppSettingsManager();
                 }
 
                 if (ApiServiceObj == null)
@@ -55,14 +109,14 @@ namespace ProjectFrameworkMob
                     ApiServiceObj = new AppApiService();
                 }
 
-                App.SettingsManagerObj.LoadSettings();
+                SettingsManagerObj.LoadSettings();
                 if (!string.IsNullOrEmpty(SettingsManagerObj.AuthenticationToken))
                 {
                     ApiServiceObj.SetUserCredentials(SettingsManagerObj.UserID, SettingsManagerObj.EMail, SettingsManagerObj.AuthenticationToken);
                 }
                 LaunchForms();
             }
-            catch(Exception Ex)
+            catch (Exception Ex)
             {
                 MainPageObj = new MainPage(Ex.Message);
                 MainPage = new NavigationPage(MainPageObj);
@@ -72,7 +126,7 @@ namespace ProjectFrameworkMob
         private void LaunchForms()
         {
             MainPageObj = new MainPage();
-            if(string.IsNullOrEmpty(App.SettingsManagerObj.AuthenticationToken))
+            if (string.IsNullOrEmpty(App.SettingsManagerObj.AuthenticationToken))
             {
                 MainPage = new NavigationPage(new LoginPage());
             }
@@ -80,8 +134,8 @@ namespace ProjectFrameworkMob
             {
                 MainPage = new NavigationPage(MainPageObj);
             }
-            
         }
+
         public void RelaunchMasterForm()
         {
             MainPage = new NavigationPage(MainPageObj);
@@ -91,11 +145,11 @@ namespace ProjectFrameworkMob
         {
             MainPage = new NavigationPage(new LoginPage());
         }
+
         protected override void OnStart()
         {
         }
 
-       
         protected override void OnSleep()
         {
         }

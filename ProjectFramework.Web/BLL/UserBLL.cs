@@ -4,7 +4,7 @@ using System.Data;
 
 namespace ProjectFramework.Web.BLL
 {
-    public enum UserRole { None,NormalUser, Admin }
+    public enum UserRole { None, NormalUser, Admin }
     public class UserBLL : BLLBase
     {
         public AuthInfo GetUserInfo(string UserNameOrEmail, string Password)
@@ -14,20 +14,19 @@ namespace ProjectFramework.Web.BLL
             {
                 //Encrypt the password to compare that with the Database
                 string EncryptedPassword = Encrypt(Password);
-                string QueryString = "select ID , EMail from user_info_tb where UserName='" + UserNameOrEmail + "' and Password='"+EncryptedPassword+"'";
-                if(UserNameOrEmail.Contains("@"))
+                string QueryString = "select ID , Email from user_info_tb where UserName='" + UserNameOrEmail + "' and Password='" + EncryptedPassword + "'";
+                if (UserNameOrEmail.Contains("@"))
                 {
                     //The Given Query is with E Mail so change the SQL Query
-                    QueryString = "select ID , EMail from user_info_tb where EMail='"+ UserNameOrEmail + "' and Password='"+EncryptedPassword+"'";
+                    QueryString = "select ID , Email from user_info_tb where Email='" + UserNameOrEmail + "' and Password='" + EncryptedPassword + "'";
                 }
                 DataSet ds = m_objDatabaseUtils.GetRecords("UserInfo", QueryString);
 
-                if ((ds != null) && (ds.Tables[0].Rows.Count > 0))
+                if ((ds != null) && (ds.Tables.Count > 0) && (ds.Tables[0].Rows.Count > 0))
                 {
                     Info.UserID = Convert.ToInt32(ds.Tables[0].Rows[0]["ID"].ToString());
-                    string EMail = ds.Tables[0].Rows[0]["EMail"].ToString();
+                    string EMail = ds.Tables[0].Rows[0]["Email"].ToString();
                     Info.AuthenticationToken = GetAuthenticationToken(EMail, Info.UserID.ToString());
-
                 }
                 else
                 {
@@ -35,17 +34,19 @@ namespace ProjectFramework.Web.BLL
                 }
                 return Info;
             }
-            catch(Exception Ex)
+            catch (Exception Ex)
             {
-                //the ID will be -1 
-                Info.AuthenticationToken = Ex.Message;
+                // MODIFIED CATCH BLOCK
+                // The ID will be -1 
+                // This now provides a more detailed error for debugging database connection issues.
+                Info.AuthenticationToken = "Database error. Please check your connection string and ensure the database is running. Details: " + Ex.Message;
                 return Info;
             }
-            
         }
         public UserRole GetUserRole(int UserID)
         {
-            UserRole Role= UserRole.None;
+            // ... (rest of the file is unchanged)
+            UserRole Role = UserRole.None;
             try
             {
                 string QueryString = "select Role from user_info_tb where ID=" + UserID.ToString() + " ";
@@ -56,18 +57,18 @@ namespace ProjectFramework.Web.BLL
                 }
                 return Role;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return Role;
             }
         }
 
-        public bool CheckValidUser(string Email , string UserID)
+        public bool CheckValidUser(string Email, string UserID)
         {
-            bool bValid=false;
+            bool bValid = false;
             try
             {
-                string QueryString = "select Role from user_info_tb where ID=" + UserID.ToString() + " and EMail='"+ Email + "' ";
+                string QueryString = "select Role from user_info_tb where ID=" + UserID.ToString() + " and Email='" + Email + "' ";
                 DataSet ds = m_objDatabaseUtils.GetRecords("UserInfo", QueryString);
                 if ((ds != null) && (ds.Tables[0].Rows.Count > 0))
                 {

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewcontents="clr-namespace:ProjectFrameworkMob.ViewContents"
+             x:Class="ProjectFrameworkMob.Views.HomePageSettingsPage"
+             NavigationPage.HasNavigationBar="False">
+	<ContentPage.Content>
+		<StackLayout>
+			<viewcontents:MainHeaderControl x:Name="HeaderControl" IsVisible="true"></viewcontents:MainHeaderControl>
+			<ScrollView>
+				<StackLayout Padding="10">
+					<Frame CornerRadius="10" HasShadow="True">
+						<StackLayout>
+							<Label Text="Home Page Boxes" FontSize="Large" FontAttributes="Bold" />
+							<ListView x:Name="ListViewHomePageBoxes" HasUnevenRows="True">
+								<ListView.ItemTemplate>
+									<DataTemplate>
+										<ViewCell>
+											<StackLayout Padding="10">
+												<Label Text="{Binding Heading}" FontAttributes="Bold" />
+												<Label Text="{Binding SubHeading}" />
+												<Label Text="{Binding Link}" TextColor="Blue" />
+											</StackLayout>
+										</ViewCell>
+									</DataTemplate>
+								</ListView.ItemTemplate>
+							</ListView>
+							<Button Text="Get Home Page Boxes" Clicked="GetHomePageBoxes_Clicked" BackgroundColor="Green" TextColor="White" />
+							<Label x:Name="lblStatus" TextColor="Brown" FontSize="Medium" HorizontalOptions="Center" />
+						</StackLayout>
+					</Frame>
+				</StackLayout>
+			</ScrollView>
+		</StackLayout>
+	</ContentPage.Content>
+</ContentPage>

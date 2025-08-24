@@ -1,64 +1,60 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using ProjectFramework.Web.BLL;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using ProjectFrameworkCommonLib;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ProjectFramework.Web.API
 {
-    [Route("api/settings")]
+    [Route("api/Settings")]
     public class SettingsController : ControllerBase
     {
+        private SettingsBLL settingsBll = new SettingsBLL();
+
         [Route("GetSettingsInfo")]
         [HttpGet]
         public ActionResult GetSettingsInfo()
         {
             try
             {
-                AppSettings Settings = new AppSettings();
-                Settings.AppName = "Project Framework Web";
-                Settings.MainHeading = "ASP.NET Core Project Framework";
-                Settings.MainDesc = "This Application can be used as a Template to develop future applications.";
-                return Ok(Settings); ;
+                var settings = new
+                {
+                    AppName = settingsBll.GetValue("AppName"),
+                    MainHeading = settingsBll.GetValue("MainHeading"),
+                    MainDesc = settingsBll.GetValue("MainDesc")
+                };
+                return Ok(settings);
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return NotFound(Ex.Message);
+                return BadRequest(ex.Message);
             }
-
         }
+
         [Route("GetSettingsInfoEx")]
         [HttpGet]
         public ActionResult GetSettingsInfoEx(string Key)
         {
-            try
-            {
-                string Value = "Key Value";
-                
-                return Ok(Value);
-            }
-            catch (Exception Ex)
-            {
-                return NotFound(Ex.Message);
-            }
-
+            return Ok(settingsBll.GetValue(Key));
         }
+
         [Route("UpdateSettingsInfo")]
         [HttpPost]
-        public ActionResult UpdateSettingsInfo(AppSettings Settings)
+        public ActionResult UpdateSettingsInfo([FromBody] Dictionary<string, string> dict)
         {
             try
             {
+                foreach (var kvp in dict)
+                {
+                    settingsBll.SetValue(kvp.Key, kvp.Value);
+                }
                 return Ok("Settings Updated Successfully");
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                return NotFound(Ex.Message);
+                return BadRequest(ex.Message);
             }
-
         }
+
+
     }
 }

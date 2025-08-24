@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProjectFramework.Web.BLL;
 using ProjectFrameworkCommonLib;
 
 namespace ProjectFramework.Web
@@ -21,35 +18,36 @@ namespace ProjectFramework.Web
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews(); // Use AddControllersWithViews for MVC support
+            services.AddRazorPages();
+
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(600);
+                options.IdleTimeout = TimeSpan.FromMinutes(20); // Standard session timeout
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
 
-            string AppConnectionString = Configuration.GetConnectionString("PFConnStr");
-            Utils.DatabaseUtils.SetConnectionString(AppConnectionString);
-            string EncryptionDecryptionKey = Configuration.GetValue(typeof(string),"PFEncryptDecryptKey").ToString();
-            
-            if(string.IsNullOrEmpty(EncryptionDecryptionKey))
+            string appConnectionString = Configuration.GetConnectionString("PFConnStr");
+            Utils.DatabaseUtils.SetConnectionString(appConnectionString);
+            string encryptionDecryptionKey = Configuration.GetValue<string>("PFEncryptDecryptKey");
+
+            if (string.IsNullOrEmpty(encryptionDecryptionKey))
             {
-                EncryptionDecryptionKey = "KtsInfotechPalaKeralaIndia";
+                encryptionDecryptionKey = "KtsInfotechPalaKeralaIndia";
             }
 
-            PFCrypt.Key = EncryptionDecryptionKey;
+            PFCrypt.Key = encryptionDecryptionKey;
+
+            // Load mobile auth settings at startup
+            SetAuthenticationTokenOptions();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // Use this if you want App_Data off your project root folder
             string baseDir = env.ContentRootPath;
-
             AppDomain.CurrentDomain.SetData("DataDirectory", System.IO.Path.Combine(baseDir, "App_Data"));
 
             if (env.IsDevelopment())
@@ -59,24 +57,45 @@ namespace ProjectFramework.Web
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseHttpsRedirection();
+
             app.UseStaticFiles();
-            
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
+                // MODIFICATION: Ensure API controllers are mapped first.
+                endpoints.MapControllers();
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
+        }
+
+        private void SetAuthenticationTokenOptions()
+        {
+            try
+            {
+                SettingsBLL settingsBLLObj = new SettingsBLL();
+                string result = settingsBLLObj.GetValue("EnableMobAuth");
+                if (result.ToLower() == "true")
+                {
+                    SettingsBLL.SetAuthToken(true);
+                }
+                else
+                {
+                    SettingsBLL.SetAuthToken(false);
+                }
+            }
+            catch (Exception)
+            {
+                SettingsBLL.SetAuthToken(false);
+            }
         }
     }
 }

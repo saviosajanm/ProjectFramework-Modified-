@@ -21,7 +21,7 @@ namespace ProjectFramework.Web.BLL
             try
             {
                 string QueryString = "select SettingsValue from settings_tb where SettingsKey='" + Key + "'";
-                DataSet ds = m_objDatabaseUtils.GetRecords("UserInfo", QueryString);
+                DataSet ds = m_objDatabaseUtils.GetRecords("SettingsInfo", QueryString);
 
                 if ((ds != null) && (ds.Tables[0].Rows.Count > 0))
                 {
@@ -31,7 +31,7 @@ namespace ProjectFramework.Web.BLL
 
                 return Data;
             }
-            catch(Exception Ex)
+            catch (Exception Ex)
             {
                 return Data;
             }
@@ -42,7 +42,7 @@ namespace ProjectFramework.Web.BLL
             try
             {
                 string QueryString = "select SettingsValue from settings_tb where SettingsKey='" + Key + "'";
-                DataSet ds = m_objDatabaseUtils.GetRecords("UserInfo", QueryString);
+                DataSet ds = m_objDatabaseUtils.GetRecords("SettingsInfo", QueryString);
 
                 if ((ds != null) && (ds.Tables[0].Rows.Count > 0))
                 {
@@ -51,7 +51,7 @@ namespace ProjectFramework.Web.BLL
                 }
                 return bResult;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return bResult;
             }

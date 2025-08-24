@@ -1,74 +1,86 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProjectFramework.Web.BLL;
 using ProjectFramework.Web.Models;
+using System;
 
 namespace ProjectFramework.Web.Controllers
 {
-    public class AdminController : AppControllerBase
+    public class AdminController : Controller
     {
-        public AdminViewModel AdminSettings = new AdminViewModel();
-        public IActionResult Index()
-        {
-            return View("Settings");
-        }
+        private readonly SettingsBLL _settingsBll = new SettingsBLL();
+        private readonly EmailSettingsBLL _emailSettingsBLL = new EmailSettingsBLL();
+        private readonly DeviceDetailsBLL _deviceDetailsBLL = new DeviceDetailsBLL();
 
-        private void SetAdminFlag()
+        private bool CheckAdminAndSetViewBag()
         {
-            string strUserID = HttpContext.Session.GetString("UserID");
-            if (string.IsNullOrEmpty(strUserID))
-            {
-                AdminSettings.IsAdmin = false;
-            }
-            else
-            {
-                AdminSettings.IsAdmin = true;
-            }
+            var settings = new SettingsBLL();
+            ViewBag.AppName = settings.GetValue("AppName");
+
+            var strUserID = HttpContext.Session.GetString("UserID");
+            var role = HttpContext.Session.GetString("Role");
+            bool isAdmin = !string.IsNullOrEmpty(strUserID) && role == "Admin";
+            ViewBag.IsAdmin = isAdmin;
+            return isAdmin;
         }
 
         public IActionResult Settings()
         {
-            SetAdminFlag();
-            
-            if(AdminSettings.IsAdmin)
-            {
-                return View(AdminSettings);
-               
-            }
-            else
-            {
-                return RedirectToAction("Error", "Home");
-            }
-            
-        }
-        [HttpPost]
-        public IActionResult Settings(string AppName, string MainHeading, string MainDesc,string EnableMobAuth)
-        {
-            AdminSettings.AppName = AppName;
-            AdminSettings.MainHeading = MainHeading;
-            AdminSettings.MainDesc = MainDesc;
-            if(!string.IsNullOrEmpty(EnableMobAuth) && EnableMobAuth.ToLower()=="true")
-            {
-                AdminSettings.EnableMobAuth = "true";
-            }
-            else
-            {
-                AdminSettings.EnableMobAuth = "false";
-            }
-            if(AdminSettings.UpdateSettings())
-            {
-                AdminSettings.StatusString = "Settings Updated Successfully";
-            }
-            else
-            {
-                AdminSettings.StatusString = "Settings Updation Failed";
-            }
-            SetAdminFlag();
-            return View(AdminSettings);
+            if (!CheckAdminAndSetViewBag()) return RedirectToAction("Login", "Home");
+
+            var model = new AdminViewModel();
+            return View(model);
         }
 
+        [HttpPost]
+        public IActionResult Settings(AdminViewModel model)
+        {
+            if (!CheckAdminAndSetViewBag()) return RedirectToAction("Login", "Home");
+
+            model.EnableMobAuth = model.IsChecked.ToString();
+            if (model.UpdateSettings())
+            {
+                model.StatusString = "Settings Updated Successfully...";
+            }
+            else
+            {
+                model.StatusString = "Failed to update settings.";
+            }
+
+            return View(model);
+        }
+
+        public IActionResult EmailSettings()
+        {
+            if (!CheckAdminAndSetViewBag()) return RedirectToAction("Login", "Home");
+
+            var settings = _emailSettingsBLL.GetSettings();
+            return View(settings);
+        }
+
+        [HttpPost]
+        public IActionResult EmailSettings(EmailSettings settings)
+        {
+            if (!CheckAdminAndSetViewBag()) return RedirectToAction("Login", "Home");
+            try
+            {
+                _emailSettingsBLL.SetSettings(settings);
+                ViewBag.StatusMessage = "E-Mail Settings Updated Successfully...";
+            }
+            catch (Exception ex)
+            {
+                ViewBag.StatusMessage = "Error: " + ex.Message;
+            }
+
+            return View(settings);
+        }
+
+        public IActionResult DeviceDetails()
+        {
+            if (!CheckAdminAndSetViewBag()) return RedirectToAction("Login", "Home");
+
+            var details = _deviceDetailsBLL.GetDeviceDetails();
+            return View(details);
+        }
     }
 }

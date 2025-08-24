@@ -1,10 +1,7 @@
 using System;
 using System.Data;
-using System.Configuration;
-using System.Web;
-using System.Data.OleDb;
 using System.Data.Odbc;
-using System.Collections;
+using System.Data.OleDb;
 using System.Collections.Generic;
 
 namespace ProjectFramework.Web.Utils
@@ -14,140 +11,84 @@ namespace ProjectFramework.Web.Utils
     /// </summary>
     public class DatabaseUtils
     {
-
-        private static OdbcConnection m_ProductConnectionODBC = new OdbcConnection();
-        private static OleDbConnection m_ProductConnection = new OleDbConnection();
         private static string m_strDBConnection = "OLEDB";
         public static string m_strConnectionString = string.Empty;
 
         private string m_strErrorMessage;
-        // WebUtils m_objWebUtils = new WebUtils();
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
         public DatabaseUtils()
         {
             m_strErrorMessage = String.Empty;
         }
 
-        /// <summary>
-        /// Returns the error message
-        /// </summary>
-        /// <returns>String contains error message</returns>
         public string GetErrorMessage()
         {
             return m_strErrorMessage;
         }
 
-        /// <summary>
-        /// Sets the connection string
-        /// </summary>
-        /// <param name="strConnectionStringOrDSN">String contains the connection string</param>
-        /// <param name="strDatabasePathOrURL">String contains Database path or URL</param>
-        /// <param name="strUserName">String contains the username</param>
-        /// <param name="strPassword">String contains user password</param>
         public void SetConnection(string strConnectionStringOrDSN, string strDatabasePathOrURL, string strUserName, string strPassword)
         {
-            strConnectionStringOrDSN += strDatabasePathOrURL;
-            m_ProductConnection.ConnectionString = strConnectionStringOrDSN;
+            // This method is likely unused, but we'll fix it to avoid compilation errors.
+            // It now correctly sets the static connection string.
+            m_strConnectionString = strConnectionStringOrDSN + strDatabasePathOrURL;
         }
 
-        /// <summary>
-        /// Sets the connection string
-        /// </summary>
-        /// <param name="strConnectionString">String contains the connection string</param>
         public static void SetConnectionString(string strConnectionString)
         {
-            //set connection string for further reference
+            // Set connection string for further reference
             m_strConnectionString = strConnectionString;
+            string lowerConnStr = strConnectionString.ToLower();
 
-            if (strConnectionString.Contains("ODBC") || strConnectionString.Contains("odbc") || strConnectionString.Contains("dsn"))
+            // Determine the connection type based on the string content
+            if (lowerConnStr.Contains("driver=") || lowerConnStr.Contains("dsn="))
             {
-                m_ProductConnectionODBC.ConnectionString = strConnectionString;
                 m_strDBConnection = "ODBC";
             }
             else
             {
-                m_ProductConnection.ConnectionString = strConnectionString;
                 m_strDBConnection = "OLEDB";
             }
         }
 
-        /// <summary>
-        /// Formats the SQL Field
-        /// </summary>
-        /// <param name="strField">String contains the Field value</param>
-        /// <returns>String formatted</returns>
         public string FormatSQLField(string strField)
         {
-            string strFormattedField = strField.Replace("'", "''");
-            return strFormattedField;
-
+            return strField.Replace("'", "''");
         }
 
-        /// <summary>
-        /// Executes the query
-        /// </summary>
-        /// <param name="strQuery">String contains the query</param>
-        /// <returns>True if query is executed successfully</returns>
         public bool ExceuteQuery(string strQuery)
         {
-            if (m_strDBConnection == "ODBC")
+            try
             {
-                try
+                if (m_strDBConnection == "ODBC")
                 {
-                    m_ProductConnectionODBC.Open();
-                    string strNewQuery = strQuery;
-
-                    using (OdbcCommand ExecuteCommand = new OdbcCommand(strNewQuery, m_ProductConnectionODBC))
+                    using (var connection = new OdbcConnection(m_strConnectionString))
                     {
-                        ExecuteCommand.ExecuteNonQuery();
-                        m_ProductConnectionODBC.Close();
-                        return true;
+                        connection.Open();
+                        using (var command = new OdbcCommand(strQuery, connection))
+                        {
+                            command.ExecuteNonQuery();
+                        }
                     }
                 }
-                catch (Exception ex)
+                else // OLEDB
                 {
-
-                    m_ProductConnectionODBC.Close();
-                    m_strErrorMessage = ex.ToString();
-
-                    return false;
-                }
-                finally
-                {
-                    m_ProductConnectionODBC.Close();
-                }
-            }
-            else if (m_strDBConnection == "OLEDB")
-            {
-                try
-                {
-                    m_ProductConnection.Open();
-                    string strNewQuery = strQuery;
-
-                    using (OleDbCommand ExecuteCommand = new OleDbCommand(strNewQuery, m_ProductConnection))
+                    using (var connection = new OleDbConnection(m_strConnectionString))
                     {
-                        ExecuteCommand.ExecuteNonQuery();
-                        m_ProductConnection.Close();
-                        return true;
+                        connection.Open();
+                        using (var command = new OleDbCommand(strQuery, connection))
+                        {
+                            command.ExecuteNonQuery();
+                        }
                     }
                 }
-                catch (Exception ex)
-                {
-
-                    m_ProductConnection.Close();
-                    m_strErrorMessage = ex.ToString();
-
-                    return false;
-                }
-                finally
-                {
-                    m_ProductConnection.Close();
-                }
+                return true;
             }
-            return false;
+            catch (Exception ex)
+            {
+                m_strErrorMessage = ex.ToString();
+                // Re-throw the actual exception to the calling code
+                throw;
+            }
         }
 
 
@@ -559,87 +500,40 @@ namespace ProjectFramework.Web.Utils
         /// <returns>An object of Dataset contains the records</returns>
         public System.Data.DataSet GetRecords(string strTableName, string strQuery)
         {
-            if (m_strDBConnection == "ODBC")
+            try
             {
-                using (OdbcConnection odbcConnection1 = new OdbcConnection(m_strConnectionString))
+                if (m_strDBConnection == "ODBC")
                 {
-                    try
+                    using (var connection = new OdbcConnection(m_strConnectionString))
                     {
-                        //odbcConnection1.Open();
-                        using (OdbcDataAdapter adapter = new OdbcDataAdapter())
+                        connection.Open(); // MODIFIED: Explicitly open the connection.
+                        using (var adapter = new OdbcDataAdapter(strQuery, connection))
                         {
-                            using (adapter.SelectCommand = new OdbcCommand(strQuery, odbcConnection1))
-                            {
-
-                                DataSet dataset = new DataSet();
-                                if ("" != strTableName)
-                                {
-                                    //dataset.Tables.Add(strTableName);
-                                    //adapter.Fill(dataset.Tables[strTableName]);
-                                    adapter.Fill(dataset, strTableName);
-
-                                }
-                                else
-                                {
-                                    adapter.Fill(dataset);
-
-                                }
-                                return dataset;
-                            }
+                            DataSet dataset = new DataSet();
+                            adapter.Fill(dataset, strTableName);
+                            return dataset;
                         }
                     }
-                    catch (Exception ex)
+                }
+                else // OLEDB
+                {
+                    using (var connection = new OleDbConnection(m_strConnectionString))
                     {
-                        
-                        m_strErrorMessage = ex.ToString();
-                        return null;
-                    }
-                    finally
-                    {
-                        odbcConnection1.Close();
+                        connection.Open(); // MODIFIED: Explicitly open the connection.
+                        using (var adapter = new OleDbDataAdapter(strQuery, connection))
+                        {
+                            DataSet dataset = new DataSet();
+                            adapter.Fill(dataset, strTableName);
+                            return dataset;
+                        }
                     }
                 }
             }
-            else //if(m_strDBConnection == "OLEDB")
+            catch (Exception ex)
             {
-                using (OleDbConnection oledbConnection1 = new OleDbConnection(m_strConnectionString))
-                {
-                    try
-                    {
-                        //oledbConnection1.Open();
-                        using (OleDbDataAdapter adapter = new OleDbDataAdapter())
-                        {
-                            using (adapter.SelectCommand = new OleDbCommand(strQuery, oledbConnection1))
-                            {
-
-                                DataSet dataset = new DataSet();
-                                if ("" != strTableName)
-                                {
-                                    //dataset.Tables.Add(strTableName);
-                                    //adapter.Fill(dataset.Tables[strTableName]);
-                                    adapter.Fill(dataset, strTableName);
-
-                                }
-                                else
-                                {
-                                    adapter.Fill(dataset);
-
-                                }
-
-                                return dataset;
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        m_strErrorMessage = ex.ToString();
-                        return null;
-                    }
-                    finally
-                    {
-                        oledbConnection1.Close();
-                    }
-                }
+                m_strErrorMessage = ex.ToString();
+                // Re-throw the exception so the Business Logic Layer knows the real problem.
+                throw;
             }
         }
 
@@ -751,15 +645,7 @@ namespace ProjectFramework.Web.Utils
 
         public static bool IsDatabaseMySQL()
         {
-            string strConnectionString = m_strConnectionString;
-
-            string strMSAccessKeyWord = "mysql";
-            strConnectionString = strConnectionString.ToLower();
-            if (strConnectionString.Contains(strMSAccessKeyWord))
-            {
-                return true;
-            }
-            return false;
+            return m_strConnectionString.ToLower().Contains("mysql");
         }
 
     }

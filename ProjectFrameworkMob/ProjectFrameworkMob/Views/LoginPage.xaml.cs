@@ -1,9 +1,5 @@
 ﻿using ProjectFrameworkCommonLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -16,7 +12,6 @@ namespace ProjectFrameworkMob.Views
         public LoginPage()
         {
             InitializeComponent();
-            
         }
 
         private async void ButtonLogin_Clicked(object sender, EventArgs e)
@@ -33,27 +28,26 @@ namespace ProjectFrameworkMob.Views
                     App.SettingsManagerObj.SaveSettings();
                     App.ApiServiceObj.SetUserCredentials(Info.UserID, lblUsername.Text, Info.AuthenticationToken);
                     lblStatus.Text = "Login Success..";
-                    //Thread.delay
                     await Task.Delay(500);
-                    
+
                     ((App)(App.Current)).RelaunchMasterForm();
                 }
                 else
                 {
-                    lblStatus.Text = "Login Failed..";
+                    lblStatus.Text = "Login Failed: " + Info.AuthenticationToken;
                 }
             }
-            catch(Exception Ex)
+            catch (Exception Ex)
             {
-
+                lblStatus.Text = "Error: " + Ex.Message;
             }
         }
 
         private async void ButtonSignup_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new WebViewPage(App.AzureBackendUrl+"/Login"));
+            // MODIFIED: Use the dynamic LoginPageUrl property from the App class.
+            // This ensures the WebView points to the correct URL for either backend.
+            await Navigation.PushAsync(new WebViewPage(App.LoginPageUrl));
         }
-
     }
 }
-

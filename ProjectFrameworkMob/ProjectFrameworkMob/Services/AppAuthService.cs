@@ -1,9 +1,7 @@
 ﻿using Newtonsoft.Json;
 using ProjectFrameworkCommonLib;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectFrameworkMob.Services
@@ -15,30 +13,34 @@ namespace ProjectFrameworkMob.Services
             AuthInfo Info = new AuthInfo();
             try
             {
-                string Paramters = "api/Auth/ValidateUser?UserID=" + UserID + "&Password=" + Password;
-                var requestTask = await AppServiceClient.GetAsync(Paramters);
-                var response = Task.Run(() => requestTask);
-                Task<string> ResponseData;
-                if (response.Result.IsSuccessStatusCode)
+                // MODIFICATION: Ensure this URL exactly matches the new route attribute.
+                // It is case-sensitive.
+                string Paramters = $"api/Auth/ValidateUser?UserID={Uri.EscapeDataString(UserID)}&Password={Uri.EscapeDataString(Password)}";
+                var response = await AppServiceClient.GetAsync(Paramters);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    ResponseData = response.Result.Content.ReadAsStringAsync();
-
-                    Info = JsonConvert.DeserializeObject<AuthInfo>(ResponseData.Result);
-
+                    string responseData = await response.Content.ReadAsStringAsync();
+                    Info = JsonConvert.DeserializeObject<AuthInfo>(responseData);
                 }
                 else
                 {
-                    ResponseData = response.Result.Content.ReadAsStringAsync();
+                    string errorContent = await response.Content.ReadAsStringAsync();
                     Info.UserID = -1;
-                    Info.AuthenticationToken = ResponseData.Result;
-
+                    Info.AuthenticationToken = !string.IsNullOrWhiteSpace(errorContent)
+                        ? errorContent
+                        : $"Request failed: {response.ReasonPhrase} ({(int)response.StatusCode})";
                 }
                 return Info;
             }
             catch (Exception Ex)
             {
                 Info.UserID = -1;
-                Info.AuthenticationToken = Ex.Message;
+                Info.AuthenticationToken = $"Exception: {Ex.Message}";
+                if (Ex.InnerException != null)
+                {
+                    Info.AuthenticationToken += $" | InnerException: {Ex.InnerException.Message}";
+                }
                 return Info;
             }
         }
